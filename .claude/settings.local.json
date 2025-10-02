@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mkdir:*)",
+      "Bash(touch:*)",
+      "Bash(curl -X POST )",
+      "Bash('https://discord.com/api/webhooks/1423361486167871538/HORZj0pHtokRh4fDvqjHG1jAUDSSw2YRfuG1UROD2Z1uIvCGxBysPPBDNVFy3q0_F1P6' )",
+      "Bash(chmod:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

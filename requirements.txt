@@ -1,0 +1,7 @@
+# Core dependencies - MINIMAL
+# Phase 1: Zero external dependencies (uses Python stdlib only)
+
+# Phase 2 will require:
+# ccxt==4.2.0  # Unified exchange API
+# websockets==12.0  # WebSocket client for real-time data
+# aiohttp==3.9.0  # Async HTTP client
