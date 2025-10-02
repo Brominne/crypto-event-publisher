@@ -79,7 +79,7 @@ async def main():
     api_task = asyncio.create_task(api_server.start())
 
     # Start heartbeat monitor
-    heartbeat_url = config.get("heartbeat_url", "https://hc-ping.com/89e2b96e-2ac9-49b2-8331-56a9a719612a")
+    heartbeat_url = config.get("heartbeat_url", None)
     heartbeat_interval = config.get("heartbeat_interval", 30)
     heartbeat = HeartbeatMonitor(heartbeat_url, heartbeat_interval)
     heartbeat_task = asyncio.create_task(heartbeat.start())
