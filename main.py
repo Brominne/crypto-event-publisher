@@ -10,6 +10,7 @@ import signal
 from core.event import Event
 from core.event_bus import EventBus
 from core.listener import EventListener
+from core.heartbeat import HeartbeatMonitor
 from notifications.discord_handler import DiscordWebhookHandler
 from config.settings import Config, setup_logging
 from api.http_api import EventAPIServer
@@ -77,10 +78,17 @@ async def main():
     )
     api_task = asyncio.create_task(api_server.start())
 
+    # Start heartbeat monitor
+    heartbeat_url = config.get("heartbeat_url", "https://hc-ping.com/89e2b96e-2ac9-49b2-8331-56a9a719612a")
+    heartbeat_interval = config.get("heartbeat_interval", 30)
+    heartbeat = HeartbeatMonitor(heartbeat_url, heartbeat_interval)
+    heartbeat_task = asyncio.create_task(heartbeat.start())
+
     print(f"\n{'='*60}")
     print("Crypto Alert System - Service Mode")
     print(f"{'='*60}")
     print(f"Active listeners: {event_bus.get_listener_count()}")
+    print(f"Heartbeat: Pinging every {heartbeat_interval}s")
     print(f"\nService running... Press Ctrl+C to stop")
     print(f"{'='*60}\n")
 
@@ -101,15 +109,17 @@ async def main():
 
     # Graceful shutdown
     print("Stopping services...")
+    await heartbeat.stop()
     await api_server.stop()
     await event_bus.stop()
 
     # Cancel tasks
+    heartbeat_task.cancel()
     api_task.cancel()
     bus_task.cancel()
 
     try:
-        await asyncio.gather(api_task, bus_task, return_exceptions=True)
+        await asyncio.gather(heartbeat_task, api_task, bus_task, return_exceptions=True)
     except asyncio.CancelledError:
         pass
 
